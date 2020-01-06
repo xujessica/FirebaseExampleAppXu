@@ -17,9 +17,9 @@ public class Event implements Parcelable
     private int year;
     private int month;
     private int day;
-    //private Date date;
     private String key;
 
+    // needed  for the Parcelable code to work
     public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
 
         @Override
@@ -34,6 +34,14 @@ public class Event implements Parcelable
     };
 
 
+    /** This is a "constructor" of sorts that is needed with the Parceable interface to
+     * tell the intent how to create an Event object when it is received from the intent
+     * basically it is setting each instance variable as a String or Int
+     * if the instance variables were objects themselves you would need to do more complex code
+     *
+     * @param parcel    the parcel that is received from the intent
+     */
+
     public Event(Parcel parcel) {
         eventName = parcel.readString();
         eventDate = parcel.readString();
@@ -41,8 +49,17 @@ public class Event implements Parcelable
         year = parcel.readInt();
         day = parcel.readInt();
         key = parcel.readString();
-
     }
+
+    /**
+     * This is the regular constructor used in the traditional sense
+     * We use this one when we do not know the unique Firebase key yet for the Event
+     * @param eventName
+     * @param eventDate
+     * @param year
+     * @param month
+     * @param day
+     */
 
     public Event(String eventName, String eventDate, int year, int month, int day) {
         this.eventName = eventName;
@@ -53,6 +70,15 @@ public class Event implements Parcelable
         this.key = "no key yet";
     }
 
+    /**
+     * This constructor is used when the unique Firebase key is already known.
+     * @param eventName
+     * @param eventDate
+     * @param year
+     * @param month
+     * @param day
+     * @param key
+     */
     public Event(String eventName, String eventDate, int year, int month, int day, String key) {
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -63,6 +89,13 @@ public class Event implements Parcelable
     }
 
     @Override
+    /**
+     * This is what is used when we send the Event object through an intent
+     * It is also a method that is part of the Parceable interface and is needed
+     * to set up the object that is being sent.  Then, when it is received, the
+     * other Event constructor that accepts a Parcel reference can "unpack it"
+     *
+     */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(eventName);
         dest.writeString(eventDate);
@@ -71,18 +104,28 @@ public class Event implements Parcelable
         dest.writeInt(day);
         dest.writeString(key);
 
-        // need to add the Date object
-
-        /**
-         * If your Parcelable class will have child classes, you'll need to
-         * take some extra care with the describeContents() method. This will
-         * let you identify the specific child class that should be created by
-         * the Parcelable.Creator. You can read more about how this works on
-         * Stack Overflow.
-         *
-         * https://stackoverflow.com/questions/4778834/purpose-of-describecontents-of-parcelable-interface
-         */
     }
+
+
+    /**
+     * This method is required for Parceable interface.  As of now, this method is in the default state
+     * and doesn't really do anything.
+     *
+     * If your Parcelable class will have child classes, you'll need to
+     *          * take some extra care with the describeContents() method. This will
+     *          * let you identify the specific child class that should be created by
+     *          * the Parcelable.Creator. You can read more about how this works on
+     *          * Stack Overflow.
+     *          *
+     *          * https://stackoverflow.com/questions/4778834/purpose-of-describecontents-of-parcelable-interface
+     * @return
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // BEGIN TYPICAL JAVA METHODS FOR EVENT CLASS
 
     public boolean equals(Event other) {
         return this.eventDate.equals(other.eventDate) && this.eventName.equals(other.eventName);
@@ -104,7 +147,8 @@ public class Event implements Parcelable
         return eventDate;
     }
 
-    public int getYear(){ return year;}
+    public int getYear(){
+        return year;}
 
     public int getMonth() {
         return month;
@@ -147,7 +191,6 @@ public class Event implements Parcelable
         else
             str += "Dec ";
 
-
         // Extra space to keep it looking uniform in listview
         if (day < 10)
             str += "  ";
@@ -156,10 +199,5 @@ public class Event implements Parcelable
         str += ", " + year + "   " + eventName;
 
         return str;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 }
