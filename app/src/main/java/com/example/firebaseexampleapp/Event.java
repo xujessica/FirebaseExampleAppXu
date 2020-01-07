@@ -12,6 +12,7 @@ import java.text.ParseException;
  */
 public class Event implements Parcelable
 {
+    // Jess
     private String eventName;
     private String eventDate;
     private int year;
