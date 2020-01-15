@@ -9,10 +9,11 @@ import java.text.ParseException;
  * This class implements the Parcelable interface so that Event objects can be passed through the intent
  * https://code.tutsplus.com/tutorials/how-to-pass-data-between-activities-with-android-parcelable--cms-29559
  *
+ * use Parcelable to be able to send an entire object rather than sending each piece individually
+ *
  */
-public class Event implements Parcelable
+public class Event implements Parcelable // allows intent to send entire object and for intent to receive entire object
 {
-    // Jess
     private String eventName;
     private String eventDate;
     private int year;
@@ -39,6 +40,9 @@ public class Event implements Parcelable
      * tell the intent how to create an Event object when it is received from the intent
      * basically it is setting each instance variable as a String or Int
      * if the instance variables were objects themselves you would need to do more complex code
+     *
+     * gets Parcel and
+     * creates intent object at the end
      *
      * @param parcel    the parcel that is received from the intent
      */
@@ -69,10 +73,16 @@ public class Event implements Parcelable
         this.month = month;
         this.day = day;
         this.key = "no key yet";
+        // there is a unique key in firebase for each new object made
+        // first constructor because we made an Event object from data entered by user but not in Firebase yet
     }
 
     /**
      * This constructor is used when the unique Firebase key is already known.
+     *
+     * used to pass an object through intent
+     * bundles everything together
+     *
      * @param eventName
      * @param eventDate
      * @param year
@@ -87,6 +97,7 @@ public class Event implements Parcelable
         this.month = month;
         this.day = day;
         this.key = key;
+        // when object is in Firebase then key is known
     }
 
     @Override
@@ -104,7 +115,8 @@ public class Event implements Parcelable
         dest.writeInt(year);
         dest.writeInt(day);
         dest.writeString(key);
-
+        // order matches Event constructor
+        // put in Parcel call dest
     }
 
 
